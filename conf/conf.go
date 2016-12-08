@@ -18,7 +18,7 @@ const (
 // LoadConfigFile load the needed configuration file
 func LoadConfigFile() {
 	// Init the conf app
-	// Looking for ~/.eXoR/exor-config.properties
+	// Looking for ~/.go-d2d file
 	viper.SetConfigName(APP_CONFIG_FILE)
 	viper.SetConfigType(APP_CONFIG_FILE_TYPE)
 	viper.AddConfigPath(os.Getenv("HOME") + APP_CONFIG_FILE_PATH)
