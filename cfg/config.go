@@ -1,4 +1,4 @@
-package configuration
+package cfg
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/viper"
 
-	d2dcmd "go-d2d/cmd"
+	"github.com/mgreau/go-d2d/cmd"
 )
 
 const (
@@ -25,7 +25,7 @@ func LoadConfigFile() {
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
-		d2dcmd.PrintError("Fatal error while trying to load config file:", err)
+		cmd.PrintError("Fatal error while trying to load config file:", err)
 	}
 }
 
@@ -35,4 +35,9 @@ func DisplayUserConfiguration() {
     for _, k := range viper.AllKeys() {
         fmt.Println(""+k + " = "+ viper.GetString(k))
     }
+}
+
+// GetUserToken get the token from the config file
+func GetUserToken() string {
+	return viper.GetString("githubToken")
 }

@@ -2,33 +2,80 @@ package services
 
 import (
 	"fmt"
-	"github.com/google/go-github/github"
+	github "github.com/google/go-github/github"
+
+		"golang.org/x/oauth2"
 
 	"net/http"
+	"github.com/mitchellh/cli"
 )
 
 var (
 	// github informations
-	token  string
-	orgs   stringSlice
+	orgs   StringSlice
 	dryrun bool
-
 )
 
-// stringSlice is a slice of strings
-type stringSlice []string
+// CreateClient create the github/http client
+func CreateClient(token string) *github.Client {
 
-// implement the flag interface for stringSlice
-func (s *stringSlice) String() string {
-	return fmt.Sprintf("%s", *s)
+	// Create the http client.
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+
+	// Create the github client.
+	client := github.NewClient(tc)
+
+	return client
 }
-func (s *stringSlice) Set(value string) error {
-	*s = append(*s, value)
-	return nil
+
+// ListRepos list repositories
+func ListRepos(token string) {
+
+	// Create the github client.
+	client := CreateClient(token)
+
+	// Get the current user
+	user, _, err := client.Users.Get("")
+	if err != nil {
+		fmt.Printf("go-d2d error")
+	}
+	username := *user.Login
+	// add the current user to orgs
+	fmt.Println(username)
+	orgs = append(orgs, username)
+
+	page := 1
+	perPage := 20
+	if err := GetRepositories(client, page, perPage); err != nil {
+		fmt.Printf("go-d2d fatal")
+	}
+
 }
+
+// CreateRepository create a repo
+func CreateRepository(repoName *string, token string){
+
+	// Create the github client.
+	client := CreateClient(token)
+
+
+	// Get the current user
+	repo := github.Repository {
+		Name: repoName,
+	}
+	rep, resp, err := client.Repositories.Create("mgreau", *repo)
+	if err != nil {
+		fmt.Printf("go-d2d error to create a repository")
+	}
+
+}
+
 
 // GetRepositories repositories from GiHub
-func GetRepositories(client *github.client, page, perPage int) error {
+func GetRepositories(client *github.Client, page, perPage int) error {
 	opt := &github.RepositoryListOptions{
 		ListOptions: github.ListOptions{
 			Page:    page,
@@ -89,11 +136,24 @@ func handleRepo(client *github.Client, repo *github.Repository) error {
 	return nil
 }
 
-func in(a stringSlice, s string) bool {
+func in(a StringSlice, s string) bool {
 	for _, b := range a {
 		if b == s {
 			return true
 		}
 	}
 	return false
+}
+
+
+// StringSlice is a slice of strings
+type StringSlice []string
+
+// implement the flag interface for stringSlice
+func (s *StringSlice) String() string {
+	return fmt.Sprintf("%s", *s)
+}
+func (s *StringSlice) set(value string) error {
+	*s = append(*s, value)
+	return nil
 }

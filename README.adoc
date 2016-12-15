@@ -1,0 +1,6 @@
+= Improve my Day To Day work
+
+[source, shell]
+--
+$ go run main.go
+--
