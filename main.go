@@ -68,7 +68,6 @@ func init() {
 	// if flags are ok, then check for pre-requisites
 	checkPrerequisites()
 
-	services.CreateClient(token)
 }
 
 // Check Prerequisites to run this program
@@ -97,13 +96,22 @@ func main() {
 		return
 	}
 
+	//client := services.CreateClient(token)
+	//repoName := "go-maven"
+	//services.CreateRepository(&repoName, client)
+
 	log.Printf(colorstring.Color("[yellow]" + "[DEBUG] Running command %s"), command)
 	switch command {
-    case cmd.CmdInfo:
-        fmt.Println("TODO; default informations")    
-	default:
-        fmt.Println(colorstring.Color("[blue]"+BANNER))
-		fmt.Printf(colorstring.Color("[red] The command %s is not available. Please try -help to know all commands.\n"), command)
+    	case cmd.CmdInfo:
+        	fmt.Println("./go-d2d -c CMD")  
+		case cmd.CmdMaven:
+		    services.MavenCmd()
+		case cmd.CmdGit:
+		    services.GitCmd()	
+
+		default:
+			fmt.Println(colorstring.Color("[blue]"+BANNER))
+			fmt.Printf(colorstring.Color("[red] The command %s is not available. Please try -help to know all commands.\n"), command)
 	}
 }
 

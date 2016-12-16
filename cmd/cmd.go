@@ -18,6 +18,10 @@ const (
 	CmdGitCreateRepo = "git-create"
 	// CmdInfo to display informations 
 	CmdInfo = "info"
+	// CmdMaven To execute Maven commands
+	CmdMaven = "mvn"
+	// CmdGit To execute git commands
+	CmdGit = "git"
 )
 
 // PrintError Display a error message with red color

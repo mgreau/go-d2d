@@ -7,7 +7,6 @@ import (
 		"golang.org/x/oauth2"
 
 	"net/http"
-	"github.com/mitchellh/cli"
 )
 
 var (
@@ -56,19 +55,21 @@ func ListRepos(token string) {
 }
 
 // CreateRepository create a repo
-func CreateRepository(repoName *string, token string){
-
-	// Create the github client.
-	client := CreateClient(token)
-
+func CreateRepository(repoName *string, client *github.Client){
 
 	// Get the current user
 	repo := github.Repository {
 		Name: repoName,
 	}
-	rep, resp, err := client.Repositories.Create("mgreau", *repo)
+	rep, resp, err := client.Repositories.Create("", &repo)
 	if err != nil {
 		fmt.Printf("go-d2d error to create a repository")
+	}
+	if (resp != nil){
+		fmt.Printf("Error while creating repo %s", resp.Status)
+	}
+	if (rep != nil){
+		fmt.Printf("GitHub repository %s created", *rep.Name)
 	}
 
 }
